@@ -9,12 +9,13 @@ namespace ultraviolet.editors{
     {
 
 	    // Use this for initialization
-	    void Start () {
-	
-	    }
+	    public void OnSceneGUI()
+        {
+        }
 	
 	    // Update is called once per frame
-	    void Update () {
+        public void OnInspectorGUI()
+        {
 	
 	    }
     }
