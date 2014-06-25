@@ -7,16 +7,26 @@ namespace ultraviolet.editors{
     [CustomEditor(typeof(Grid))]
     public class GridEditor : Editor
     {
+        SerializedProperty width;
+        SerializedProperty widthCount;
+        SerializedProperty lengthCount;
 
-	    // Use this for initialization
-	    public void OnSceneGUI()
-        {
-        }
+        bool dirty = true;
 	
-	    // Update is called once per frame
-        public void OnInspectorGUI()
+        public override void OnInspectorGUI()
         {
-	
+            if(dirty)
+            {
+                widthCount = serializedObject.FindProperty("widthCount");
+                lengthCount = serializedObject.FindProperty("lengthCount");
+                dirty = false;
+            }
+            serializedObject.Update();
+
+            EditorGUILayout.PropertyField(widthCount, new GUIContent("Cells long"));
+
+            serializedObject.ApplyModifiedProperties();
+
 	    }
     }
 }
