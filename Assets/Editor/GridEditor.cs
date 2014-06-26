@@ -7,7 +7,7 @@ namespace ultraviolet.editors{
     [CustomEditor(typeof(Grid))]
     public class GridEditor : Editor
     {
-        SerializedProperty width;
+        SerializedProperty widthScale;
         SerializedProperty widthCount;
         SerializedProperty lengthCount;
 
@@ -19,11 +19,19 @@ namespace ultraviolet.editors{
             {
                 widthCount = serializedObject.FindProperty("widthCount");
                 lengthCount = serializedObject.FindProperty("lengthCount");
+                widthScale = serializedObject.FindProperty("widthScale");
                 dirty = false;
             }
             serializedObject.Update();
 
-            EditorGUILayout.PropertyField(widthCount, new GUIContent("Cells long"));
+            EditorGUILayout.IntSlider(lengthCount, 1, 100, new GUIContent("Cells wide"));
+            EditorGUILayout.IntSlider(widthCount,1,100, new GUIContent("Cells long"));
+            EditorGUILayout.Slider(widthScale, 1.0f, 100.0f, new GUIContent("Cell Width"));
+
+            var prefab = ((Grid)target).basePrefab;
+
+            prefab = (GameObject)EditorGUILayout.ObjectField(prefab, typeof(GameObject), false);
+            EditorUtility.SetDirty(this);
 
             serializedObject.ApplyModifiedProperties();
 
