@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 namespace ultraviolet.builder
 {
     public class Grid : MonoBehaviour
     {
-        private int oldWidth = 1;
-        private int oldLength = 1;
+        private int oldWidth = 0;
+        private int oldLength = 0;
 
         public int widthCount = 1;
         public int lengthCount = 1;
@@ -45,8 +46,12 @@ namespace ultraviolet.builder
         [ExecuteInEditMode]
         public void editorUpdate()
         {
+            Debug.Log(String.Format("length: {0}, width: {1}", lengthCount, widthCount));
             if ((oldLength != lengthCount || oldWidth != widthCount)&& basePrefab != null)
             {
+                oldLength = lengthCount;
+                oldWidth = widthCount;
+
                 allCells = new List<List<GameObject>>();
                 for (int i = 0; i < widthCount; i++)
                 {

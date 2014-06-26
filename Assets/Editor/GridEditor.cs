@@ -30,7 +30,7 @@ namespace ultraviolet.editors{
 
             var prefab = ((Grid)target).basePrefab;
 
-            prefab = (GameObject)EditorGUILayout.ObjectField(prefab, typeof(GameObject), false);
+            ((Grid)target).basePrefab = (GameObject)EditorGUILayout.ObjectField(prefab, typeof(GameObject), false);
             EditorUtility.SetDirty(this);
 
             serializedObject.ApplyModifiedProperties();
