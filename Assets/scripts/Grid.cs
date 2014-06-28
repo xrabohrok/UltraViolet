@@ -69,7 +69,7 @@ namespace ultraviolet.builder
 
         private GameObject cellObject(string x, string y)
         {
-            var tempGameObject = (GameObject)GameObject.Instantiate(new GameObject(x + "," + y, typeof(Cell)));
+            var tempGameObject = new GameObject(x + "," + y, typeof(Cell));
             tempGameObject.AddComponent<Cell>();
             tempGameObject.GetComponent<Cell>().Parent = this;
             tempGameObject.GetComponent<Transform>().parent = this.transform;
