@@ -5,6 +5,7 @@ using System;
 
 namespace ultraviolet.builder
 {
+    [ExecuteInEditMode]
     public class Grid : MonoBehaviour
     {
         private int oldWidth = 0;
@@ -28,55 +29,65 @@ namespace ultraviolet.builder
         // Use this for initialization
         public void Start()
         {
-            if (basePrefab != null)
-            {
-                allCells = new List<List<GameObject>>();
-                allCells.Add(new List<GameObject>());
+            allCells = new List<List<GameObject>>();
+            allCells.Add(new List<GameObject>());
 
-                allCells[0].Add(cellObject());                    
-            }
+            allCells[0].Add(cellObject("Constructor", "here"));                    
         }
 
-        // Update is called once per frame
+    
         public void Update()
         {
+            if (lengthCount < 0)
+                lengthCount = oldLength;
+            if (widthCount < 0)
+                widthCount = oldWidth;
 
-        }
-
-        [ExecuteInEditMode]
-        public void editorUpdate()
-        {
-            Debug.Log(String.Format("length: {0}, width: {1}", lengthCount, widthCount));
-            if ((oldLength != lengthCount || oldWidth != widthCount)&& basePrefab != null)
+            if ((oldLength != lengthCount || oldWidth != widthCount))
             {
                 oldLength = lengthCount;
                 oldWidth = widthCount;
+
+                cleanAll();
+
+                Debug.Log(String.Format("length: {0}, width: {1}", lengthCount, widthCount));
+
 
                 allCells = new List<List<GameObject>>();
                 for (int i = 0; i < widthCount; i++)
                 {
                     allCells.Add(new List<GameObject>());
-                    for (int j = 0; i < lengthCount; j++)
-                    {
-                        allCells = new List<List<GameObject>>();
-                        allCells.Add(new List<GameObject>());
+                    Debug.Log(allCells.Count);
 
-                        allCells[0].Add(cellObject());  
+                    for (int j = 0; j < lengthCount; j++)
+                    {
+                        allCells[i].Add(cellObject(i.ToString(), j.ToString()));  
                     }
                 }
             }
         }
 
-        private GameObject cellObject()
+        private GameObject cellObject(string x, string y)
         {
-            var tempGameObject = (GameObject)GameObject.Instantiate(basePrefab);
+            var tempGameObject = (GameObject)GameObject.Instantiate(new GameObject(x + "," + y, typeof(Cell)));
             tempGameObject.AddComponent<Cell>();
             tempGameObject.GetComponent<Cell>().Parent = this;
+            tempGameObject.GetComponent<Transform>().parent = this.transform;
 
             return tempGameObject;
         }
+
+        private void cleanAll()
+        {
+            var children = this.transform.GetComponentInChildren<Transform>();
+            foreach(var child in children)
+            {
+                DestroyImmediate(((Transform)child).gameObject);
+            }
+        }
     }
 
+    [ExecuteInEditMode]
     public class Cell : MonoBehaviour
     {
         public Grid Parent { get; set; }
@@ -99,7 +110,6 @@ namespace ultraviolet.builder
 
         }
 
-        [ExecuteInEditMode]
         public void updateEdit()
         {
             this.transform.localPosition = new Vector3(Parent.width * indexX, Parent.width * indexY);
