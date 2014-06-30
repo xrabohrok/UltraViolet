@@ -79,10 +79,19 @@ namespace ultraviolet.builder
 
         private void cleanAll()
         {
-            var children = this.transform.GetComponentInChildren<Transform>();
+            var children = this.transform.GetComponentsInChildren<Cell>();
+            var deadChildren = new List<GameObject>();
+            //the enumerator builds the list live, you have to solidify the list before
+            //deleting
             foreach(var child in children)
             {
-                DestroyImmediate(((Transform)child).gameObject);
+                deadChildren.Add(child.gameObject);
+            }
+
+            foreach(var target in deadChildren)
+            {
+                if (target != null)
+                    DestroyImmediate(target);
             }
         }
     }
@@ -112,14 +121,20 @@ namespace ultraviolet.builder
 
         public void updateEdit()
         {
-            this.transform.localPosition = new Vector3(Parent.width * indexX, Parent.width * indexY);
-            this.transform.localScale = new Vector3(Parent.widthScale, Parent.widthScale);
+            if (Parent != null)
+            {
+                this.transform.localPosition = new Vector3(Parent.width * indexX, Parent.width * indexY);
+                this.transform.localScale = new Vector3(Parent.widthScale, Parent.widthScale);
+            }
         }
 
         public void OnDrawGizmos()
         {
-            Gizmos.color = Color.white;
-            Gizmos.DrawWireCube(transform.position, new Vector3(Parent.width, Parent.width, Parent.width));
+            if (Parent != null)
+            {
+                Gizmos.color = Color.white;
+                Gizmos.DrawWireCube(transform.position, new Vector3(Parent.width, Parent.width, Parent.width));
+            }
         }
     }
 }
