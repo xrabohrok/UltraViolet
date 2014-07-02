@@ -8,8 +8,11 @@ namespace ultraviolet.builder
     [ExecuteInEditMode]
     public class Grid : MonoBehaviour
     {
+		private const float floatAccuracy = .01f;
+
         private int oldWidth = 0;
         private int oldLength = 0;
+		private float oldCellWidth = 0;
 
         public int widthCount = 1;
         public int lengthCount = 1;
@@ -32,7 +35,7 @@ namespace ultraviolet.builder
             allCells = new List<List<GameObject>>();
             allCells.Add(new List<GameObject>());
 
-            allCells[0].Add(cellObject("Constructor", "here"));                    
+            allCells[0].Add(cellObject(0,0));                    
         }
 
     
@@ -50,28 +53,41 @@ namespace ultraviolet.builder
 
                 cleanAll();
 
-                Debug.Log(String.Format("length: {0}, width: {1}", lengthCount, widthCount));
-
-
                 allCells = new List<List<GameObject>>();
                 for (int i = 0; i < widthCount; i++)
                 {
                     allCells.Add(new List<GameObject>());
-                    Debug.Log(allCells.Count);
 
                     for (int j = 0; j < lengthCount; j++)
                     {
-                        allCells[i].Add(cellObject(i.ToString(), j.ToString()));  
+                        allCells[i].Add(cellObject(i, j));  
                     }
                 }
             }
+
+            //if (!floatEquality (oldCellWidth, widthScale)) 
+            //{
+            //    var children = this.transform.GetComponentsInChildren<Cell>();
+            //    foreach( var child in children)
+            //    {
+            //        child.updateEdit();
+            //    }
+            //}
+		
         }
 
-        private GameObject cellObject(string x, string y)
+		private bool floatEquality(float valueA, float valueB)
+		{
+			return (valueA + floatAccuracy > valueB) && (valueA - floatAccuracy < valueB);
+		}
+
+        private GameObject cellObject(int x, int y)
         {
             var tempGameObject = new GameObject(x + "," + y, typeof(Cell));
-            tempGameObject.AddComponent<Cell>();
             tempGameObject.GetComponent<Cell>().Parent = this;
+            tempGameObject.GetComponent<Cell>().indexX = x;
+            tempGameObject.GetComponent<Cell>().indexY = y;
+            tempGameObject.GetComponent<Cell>().updateEdit();
             tempGameObject.GetComponent<Transform>().parent = this.transform;
 
             return tempGameObject;
@@ -99,14 +115,16 @@ namespace ultraviolet.builder
     [ExecuteInEditMode]
     public class Cell : MonoBehaviour
     {
-        public Grid Parent { get; set; }
+        public Grid Parent;
         public int indexX { get; set; }
         public int indexY { get; set; }
+        public Guid id;
 
         public void Start()
         {
             indexX = 1;
             indexY = 1;
+            id = Guid.NewGuid();
         }
 
         public void Update()
@@ -123,7 +141,7 @@ namespace ultraviolet.builder
         {
             if (Parent != null)
             {
-                this.transform.localPosition = new Vector3(Parent.width * indexX, Parent.width * indexY);
+                this.transform.localPosition = new Vector3(Parent.width * indexX,0, Parent.width * indexY);
                 this.transform.localScale = new Vector3(Parent.widthScale, Parent.widthScale);
             }
         }
