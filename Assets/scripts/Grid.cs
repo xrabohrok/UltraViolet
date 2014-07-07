@@ -20,6 +20,7 @@ namespace ultraviolet.builder
         public int lengthCount = 1;
 
         public GameObject basePrefab = null;
+
         public float widthScale = 1.0f;
 
         public const float baseSize = 1.0f;
@@ -37,6 +38,7 @@ namespace ultraviolet.builder
     
         public void Update()
         {
+#if UNITY_EDITOR
             if (lengthCount < 0)
                 lengthCount = oldLength;
             if (widthCount < 0)
@@ -60,9 +62,10 @@ namespace ultraviolet.builder
 
             if (floatEquality(width, oldWidth))
             {
-                //refreshPositions();
+                Debug.Log("refreshed positions");
+                refreshPositions();
             }
-		
+#endif
         }
 
 		private bool floatEquality(float valueA, float valueB)
@@ -106,7 +109,7 @@ namespace ultraviolet.builder
             return operatingChildren;
         }
 
-        private void refreshPositions()
+        public void refreshPositions()
         {
             var children = allChildren();
             
