@@ -28,9 +28,6 @@ namespace ultraviolet.editors{
             EditorGUILayout.IntSlider(widthCount,1,100, new GUIContent("Cells long"));
             EditorGUILayout.Slider(widthScale, 1.0f, 100.0f, new GUIContent("Cell Width"));
 
-            var prefab = ((Grid)target).basePrefab;
-
-            ((Grid)target).basePrefab = (GameObject)EditorGUILayout.ObjectField(prefab, typeof(GameObject), false);
             EditorUtility.SetDirty(target);
 
             serializedObject.ApplyModifiedProperties();

@@ -8,6 +8,8 @@ namespace ultraviolet.builder
     [ExecuteInEditMode]
     public class Grid : MonoBehaviour
     {
+        private static int gridCount = 0;
+
 		private const float floatAccuracy = .01f;
 
         private int oldWidth = 0;
@@ -20,9 +22,6 @@ namespace ultraviolet.builder
         public GameObject basePrefab = null;
         public float widthScale = 1.0f;
 
-        [SerializeField]
-        public List<List<GameObject>> allCells;
-
         public const float baseSize = 1.0f;
         public float width { 
             get { return widthScale * baseSize; } 
@@ -32,10 +31,8 @@ namespace ultraviolet.builder
         // Use this for initialization
         public void Start()
         {
-            allCells = new List<List<GameObject>>();
-            allCells.Add(new List<GameObject>());
-
-            allCells[0].Add(cellObject(0,0));                    
+            gridCount++;
+            cellObject(0, 0);              
         }
 
     
@@ -53,26 +50,21 @@ namespace ultraviolet.builder
 
                 cleanAll();
 
-                allCells = new List<List<GameObject>>();
+                var children = this.transform.GetComponentsInChildren<Cell>();
+                var operatingChildren = new List<Cell>();
+                foreach (var child in children)
+                {
+                    operatingChildren.Add(child);
+                }
+
                 for (int i = 0; i < widthCount; i++)
                 {
-                    allCells.Add(new List<GameObject>());
-
                     for (int j = 0; j < lengthCount; j++)
                     {
-                        allCells[i].Add(cellObject(i, j));  
+                        cellObject(i, j);
                     }
                 }
             }
-
-            //if (!floatEquality (oldCellWidth, widthScale)) 
-            //{
-            //    var children = this.transform.GetComponentsInChildren<Cell>();
-            //    foreach( var child in children)
-            //    {
-            //        child.updateEdit();
-            //    }
-            //}
 		
         }
 
@@ -97,8 +89,7 @@ namespace ultraviolet.builder
         {
             var children = this.transform.GetComponentsInChildren<Cell>();
             var deadChildren = new List<GameObject>();
-            //the enumerator builds the list live, you have to solidify the list before
-            //deleting
+            //the enumerator builds the list live, you have to solidify the list before deleting
             foreach(var child in children)
             {
                 deadChildren.Add(child.gameObject);
@@ -113,18 +104,21 @@ namespace ultraviolet.builder
     }
 
     [ExecuteInEditMode]
+    [Serializable]
     public class Cell : MonoBehaviour
     {
         public Grid Parent;
+
+
+        [SerializeField]
         public int indexX { get; set; }
+        [SerializeField]
         public int indexY { get; set; }
-        public Guid id;
 
         public void Start()
         {
             indexX = 1;
             indexY = 1;
-            id = Guid.NewGuid();
         }
 
         public void Update()
