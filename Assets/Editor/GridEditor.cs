@@ -26,7 +26,7 @@ namespace ultraviolet.editors{
 
             EditorGUILayout.IntSlider(lengthCount, 1, 100, new GUIContent("Cells wide"));
             EditorGUILayout.IntSlider(widthCount,1,100, new GUIContent("Cells long"));
-            EditorGUILayout.Slider(widthScale, 1.0f, 100.0f, new GUIContent("Cell Width"));
+            EditorGUILayout.PropertyField(widthScale, new GUIContent("Cell Width"));
 
             EditorUtility.SetDirty(target);
 
