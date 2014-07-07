@@ -28,7 +28,6 @@ namespace ultraviolet.builder
             set { widthScale = value / baseSize; } 
         }
 
-        // Use this for initialization
         public void Start()
         {
             gridCount++;
@@ -50,13 +49,6 @@ namespace ultraviolet.builder
 
                 cleanAll();
 
-                var children = this.transform.GetComponentsInChildren<Cell>();
-                var operatingChildren = new List<Cell>();
-                foreach (var child in children)
-                {
-                    operatingChildren.Add(child);
-                }
-
                 for (int i = 0; i < widthCount; i++)
                 {
                     for (int j = 0; j < lengthCount; j++)
@@ -64,6 +56,11 @@ namespace ultraviolet.builder
                         cellObject(i, j);
                     }
                 }
+            }
+
+            if (floatEquality(width, oldWidth))
+            {
+                //refreshPositions();
             }
 		
         }
@@ -87,20 +84,38 @@ namespace ultraviolet.builder
 
         private void cleanAll()
         {
-            var children = this.transform.GetComponentsInChildren<Cell>();
-            var deadChildren = new List<GameObject>();
-            //the enumerator builds the list live, you have to solidify the list before deleting
-            foreach(var child in children)
-            {
-                deadChildren.Add(child.gameObject);
-            }
+            var children = allChildren();
 
-            foreach(var target in deadChildren)
+            foreach(var target in children)
             {
                 if (target != null)
-                    DestroyImmediate(target);
+                    DestroyImmediate(target.gameObject);
             }
         }
+
+        private List<Cell> allChildren()
+        {
+            //the enumerator builds the list live, you have to solidify the list before deleting
+            var children = this.transform.GetComponentsInChildren<Cell>();
+            var operatingChildren = new List<Cell>();
+            foreach (var child in children)
+            {
+                operatingChildren.Add(child);
+            }
+
+            return operatingChildren;
+        }
+
+        private void refreshPositions()
+        {
+            var children = allChildren();
+            
+            foreach(var child in children)
+            {
+                child.updateEdit();
+            }
+        }
+
     }
 
     [ExecuteInEditMode]

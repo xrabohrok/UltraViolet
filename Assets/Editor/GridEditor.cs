@@ -28,7 +28,8 @@ namespace ultraviolet.editors{
             EditorGUILayout.IntSlider(widthCount,1,100, new GUIContent("Cells long"));
             EditorGUILayout.PropertyField(widthScale, new GUIContent("Cell Width"));
 
-            EditorUtility.SetDirty(target);
+            if(GUI.changed)
+                EditorUtility.SetDirty(target);
 
             serializedObject.ApplyModifiedProperties();
 
