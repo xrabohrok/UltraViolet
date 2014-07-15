@@ -41,6 +41,7 @@ namespace ultraviolet.builder
     
         public void Update()
         {
+            //user error guard
             if (lengthCount < 0)
                 lengthCount = oldLength;
             if (widthCount < 0)
@@ -53,6 +54,9 @@ namespace ultraviolet.builder
 
                 cleanAll();
 
+                var tempPosition = this.transform.position;
+                this.transform.position = new Vector3();
+
                 allCells = new List<List<GameObject>>();
                 for (int i = 0; i < widthCount; i++)
                 {
@@ -63,6 +67,8 @@ namespace ultraviolet.builder
                         allCells[i].Add(cellObject(i, j));  
                     }
                 }
+
+                this.transform.position = tempPosition;
             }
 
             //if (!floatEquality (oldCellWidth, widthScale)) 
