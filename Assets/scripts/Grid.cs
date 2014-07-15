@@ -8,6 +8,8 @@ namespace ultraviolet.builder
     [ExecuteInEditMode]
     public class Grid : MonoBehaviour
     {
+        private static int gridCount = 0;
+
 		private const float floatAccuracy = .01f;
 
         private int oldWidth = 0;
@@ -18,10 +20,8 @@ namespace ultraviolet.builder
         public int lengthCount = 1;
 
         public GameObject basePrefab = null;
-        public float widthScale = 1.0f;
 
-        [SerializeField]
-        public List<List<GameObject>> allCells;
+        public float widthScale = 1.0f;
 
         public const float baseSize = 1.0f;
         public float width { 
@@ -29,19 +29,17 @@ namespace ultraviolet.builder
             set { widthScale = value / baseSize; } 
         }
 
-        // Use this for initialization
         public void Start()
         {
-            allCells = new List<List<GameObject>>();
-            allCells.Add(new List<GameObject>());
-
-            allCells[0].Add(cellObject(0,0));                    
+            gridCount++;
+            cellObject(0, 0);              
         }
 
     
         public void Update()
         {
             //user error guard
+#if UNITY_EDITOR
             if (lengthCount < 0)
                 lengthCount = oldLength;
             if (widthCount < 0)
@@ -54,22 +52,22 @@ namespace ultraviolet.builder
 
                 cleanAll();
 
+
                 var tempPosition = this.transform.position;
                 this.transform.position = new Vector3();
 
-                allCells = new List<List<GameObject>>();
                 for (int i = 0; i < widthCount; i++)
                 {
-                    allCells.Add(new List<GameObject>());
-
                     for (int j = 0; j < lengthCount; j++)
                     {
-                        allCells[i].Add(cellObject(i, j));  
+                        cellObject(i, j);
                     }
+
                 }
 
                 this.transform.position = tempPosition;
             }		
+#endif
         }
 
 		private bool floatEquality(float valueA, float valueB)
@@ -89,29 +87,39 @@ namespace ultraviolet.builder
 
         private void cleanAll()
         {
-            var children = this.transform.GetComponentsInChildren<Cell>();
-            var deadChildren = new List<GameObject>();
-            //the enumerator builds the list live, you have to solidify the list before
-            //deleting
-            foreach(var child in children)
-            {
-                deadChildren.Add(child.gameObject);
-            }
+            var children = allChildren();
 
-            foreach(var target in deadChildren)
+            foreach(var target in children)
             {
                 if (target != null)
-                    DestroyImmediate(target);
+                    DestroyImmediate(target.gameObject);
             }
         }
+
+        private List<Cell> allChildren()
+        {
+            //the enumerator builds the list live, you have to solidify the list before deleting
+            var children = this.transform.GetComponentsInChildren<Cell>();
+            var operatingChildren = new List<Cell>();
+            foreach (var child in children)
+            {
+                operatingChildren.Add(child);
+            }
+
+            return operatingChildren;
+        }
+
+
     }
 
     [ExecuteInEditMode]
+    [Serializable]
     public class Cell : MonoBehaviour
     {
         public Grid Parent;
         public int indexX { get; private set; }
         public int indexY { get; private set; }
+
 
         public void Start()
         {
