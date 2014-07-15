@@ -69,17 +69,7 @@ namespace ultraviolet.builder
                 }
 
                 this.transform.position = tempPosition;
-            }
-
-            //if (!floatEquality (oldCellWidth, widthScale)) 
-            //{
-            //    var children = this.transform.GetComponentsInChildren<Cell>();
-            //    foreach( var child in children)
-            //    {
-            //        child.updateEdit();
-            //    }
-            //}
-		
+            }		
         }
 
 		private bool floatEquality(float valueA, float valueB)
@@ -91,9 +81,7 @@ namespace ultraviolet.builder
         {
             var tempGameObject = new GameObject(x + "," + y, typeof(Cell));
             tempGameObject.GetComponent<Cell>().Parent = this;
-            tempGameObject.GetComponent<Cell>().indexX = x;
-            tempGameObject.GetComponent<Cell>().indexY = y;
-            tempGameObject.GetComponent<Cell>().updateEdit();
+            tempGameObject.GetComponent<Cell>().updateEdit(x, y);
             tempGameObject.GetComponent<Transform>().parent = this.transform;
 
             return tempGameObject;
@@ -122,15 +110,13 @@ namespace ultraviolet.builder
     public class Cell : MonoBehaviour
     {
         public Grid Parent;
-        public int indexX { get; set; }
-        public int indexY { get; set; }
-        public Guid id;
+        public int indexX { get; private set; }
+        public int indexY { get; private set; }
 
         public void Start()
         {
             indexX = 1;
             indexY = 1;
-            id = Guid.NewGuid();
         }
 
         public void Update()
@@ -140,15 +126,21 @@ namespace ultraviolet.builder
         public void resize(float width, float spacing, int up, int right)
         {
             this.transform.localScale = new Vector3(width,width,width);
-
         }
 
-        public void updateEdit()
+        public void updateEdit(int index_X, int index_Y)
+        {
+            setPosition(index_X, index_Y);
+
+            indexX = index_X;
+            indexY = index_Y;
+        }
+
+        private void setPosition(int x, int y)
         {
             if (Parent != null)
             {
-                this.transform.localPosition = new Vector3(Parent.width * indexX,0, Parent.width * indexY);
-                this.transform.localScale = new Vector3(Parent.widthScale, Parent.widthScale);
+                this.transform.localPosition = new Vector3(Parent.width * (float)x , 0, Parent.width * (float)y);
             }
         }
 
@@ -157,7 +149,9 @@ namespace ultraviolet.builder
             if (Parent != null)
             {
                 Gizmos.color = Color.white;
-                Gizmos.DrawWireCube(transform.position, new Vector3(Parent.width, Parent.width, Parent.width));
+                //Gizmos.DrawWireCube(transform.position, new Vector3(Parent.width, Parent.width, Parent.width));
+                Gizmos.DrawWireCube(transform.position, new Vector3(1, Parent.width, 1));
+
             }
         }
     }

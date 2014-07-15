@@ -20,6 +20,7 @@ namespace ultraviolet.editors{
                 widthCount = serializedObject.FindProperty("widthCount");
                 lengthCount = serializedObject.FindProperty("lengthCount");
                 widthScale = serializedObject.FindProperty("widthScale");
+                
                 dirty = false;
             }
             serializedObject.Update();
