@@ -15,6 +15,8 @@ namespace ultraviolet.editors{
 	
         public override void OnInspectorGUI()
         {
+            var GridParent = (Grid)this.target;
+
             if(dirty)
             {
                 widthCount = serializedObject.FindProperty("widthCount");
@@ -28,6 +30,11 @@ namespace ultraviolet.editors{
             EditorGUILayout.IntSlider(lengthCount, 1, 100, new GUIContent("Cells wide"));
             EditorGUILayout.IntSlider(widthCount,1,100, new GUIContent("Cells long"));
             EditorGUILayout.PropertyField(widthScale, new GUIContent("Cell Width"));
+            
+            if(GUILayout.Button("Refresh"))
+            {
+                GridParent.refreshEditorView();
+            }
 
 
             if (GUI.changed)

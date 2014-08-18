@@ -37,36 +37,36 @@ namespace ultraviolet.builder
 
     
         public void Update()
+        {           
+            //It is unlikely the grid itself will do anything, other than have a name
+        }
+
+        public void refreshEditorView()
         {
-            //user error guard
 #if UNITY_EDITOR
+            //user error guard
             if (lengthCount < 0)
                 lengthCount = oldLength;
             if (widthCount < 0)
                 widthCount = oldWidth;
 
-            if ((oldLength != lengthCount || oldWidth != widthCount))
+            oldLength = lengthCount;
+            oldWidth = widthCount;
+
+            cleanAll();
+
+            var tempPosition = this.transform.position;
+            this.transform.position = new Vector3();
+
+            for (int i = 0; i < widthCount; i++)
             {
-                oldLength = lengthCount;
-                oldWidth = widthCount;
-
-                cleanAll();
-
-
-                var tempPosition = this.transform.position;
-                this.transform.position = new Vector3();
-
-                for (int i = 0; i < widthCount; i++)
+                for (int j = 0; j < lengthCount; j++)
                 {
-                    for (int j = 0; j < lengthCount; j++)
-                    {
-                        cellObject(i, j);
-                    }
-
+                    cellObject(i, j);
                 }
+            }
 
-                this.transform.position = tempPosition;
-            }		
+            this.transform.position = tempPosition;
 #endif
         }
 
@@ -108,8 +108,6 @@ namespace ultraviolet.builder
 
             return operatingChildren;
         }
-
-
     }
 
     [ExecuteInEditMode]
@@ -131,6 +129,7 @@ namespace ultraviolet.builder
         {
         }
 
+#if UNITY_EDITOR
         public void resize(float width, float spacing, int up, int right)
         {
             this.transform.localScale = new Vector3(width,width,width);
@@ -157,10 +156,11 @@ namespace ultraviolet.builder
             if (Parent != null)
             {
                 Gizmos.color = Color.white;
-                //Gizmos.DrawWireCube(transform.position, new Vector3(Parent.width, Parent.width, Parent.width));
-                Gizmos.DrawWireCube(transform.position, new Vector3(1, Parent.width, 1));
+                Gizmos.DrawWireCube(transform.position, new Vector3(Parent.width, .2f, Parent.width));
+                //Gizmos.DrawWireCube(transform.position, new Vector3(1, Parent.width, 1));
 
             }
         }
+#endif
     }
 }
