@@ -28,9 +28,7 @@ namespace ultraviolet.builder
         public void Start()
         {
             gridCount++;
-            cellObject(0, 0);              
         }
-
     
         public void Update()
         {           
@@ -40,8 +38,6 @@ namespace ultraviolet.builder
         public void refreshEditorView()
         {
 #if UNITY_EDITOR
-            //user error guard
-
             cleanAll();
 
             var tempPosition = this.transform.position;
