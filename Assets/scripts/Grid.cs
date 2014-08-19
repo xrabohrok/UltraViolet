@@ -12,10 +12,6 @@ namespace ultraviolet.builder
 
 		private const float floatAccuracy = .01f;
 
-        private int oldWidth = 0;
-        private int oldLength = 0;
-		private float oldCellWidth = 0;
-
         public int widthCount = 1;
         public int lengthCount = 1;
 
@@ -45,13 +41,6 @@ namespace ultraviolet.builder
         {
 #if UNITY_EDITOR
             //user error guard
-            if (lengthCount < 0)
-                lengthCount = oldLength;
-            if (widthCount < 0)
-                widthCount = oldWidth;
-
-            oldLength = lengthCount;
-            oldWidth = widthCount;
 
             cleanAll();
 
@@ -123,10 +112,19 @@ namespace ultraviolet.builder
         {
             indexX = 1;
             indexY = 1;
+
+            if (Parent.basePrefab != null && Application.isPlaying)
+                instantiateChild(Parent.basePrefab);
         }
 
         public void Update()
         {
+        }
+
+        public void instantiateChild(GameObject prefab)
+        {
+            var child = (GameObject)Instantiate(prefab, this.transform.position, this.transform.rotation);
+            child.transform.parent = this.transform;
         }
 
 #if UNITY_EDITOR

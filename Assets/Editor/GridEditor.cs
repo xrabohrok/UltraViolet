@@ -30,6 +30,7 @@ namespace ultraviolet.editors{
             EditorGUILayout.IntSlider(lengthCount, 1, 100, new GUIContent("Cells wide"));
             EditorGUILayout.IntSlider(widthCount,1,100, new GUIContent("Cells long"));
             EditorGUILayout.PropertyField(widthScale, new GUIContent("Cell Width"));
+            GridParent.basePrefab = (GameObject)EditorGUILayout.ObjectField(GridParent.basePrefab, typeof(GameObject), false);
             
             if(GUILayout.Button("Refresh"))
             {
