@@ -35,27 +35,38 @@ namespace ultraviolet.builder
             //It is unlikely the grid itself will do anything, other than have a name
         }
 
+#if UNITY_EDITOR
         public void refreshEditorView()
         {
-#if UNITY_EDITOR
             cleanAll();
 
             var tempPosition = this.transform.position;
             this.transform.position = new Vector3();
 
+            List<List<GameObject>> cellArray = new List<List<GameObject>>();
+
             for (int i = 0; i < widthCount; i++)
             {
+                cellArray[i] = new List<GameObject>();
                 for (int j = 0; j < lengthCount; j++)
                 {
-                    cellObject(i, j);
+                    cellArray[i].Add(cellObject(i, j));
                 }
             }
 
             this.transform.position = tempPosition;
-#endif
+
+            linkNeighbors(cellArray);
         }
 
-		private bool floatEquality(float valueA, float valueB)
+        public void linkNeighbors(List<List<GameObject>> cellArray)
+        {
+
+        }
+#endif
+
+
+        private bool floatEquality(float valueA, float valueB)
 		{
 			return (valueA + floatAccuracy > valueB) && (valueA - floatAccuracy < valueB);
 		}
