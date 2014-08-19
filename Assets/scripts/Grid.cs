@@ -103,11 +103,16 @@ namespace ultraviolet.builder
         public int indexX { get; private set; }
         public int indexY { get; private set; }
 
+        public List<Cell> neighbors;
+
 
         public void Start()
         {
             indexX = 1;
             indexY = 1;
+
+            if (neighbors == null)
+                neighbors = new List<Cell>();
 
             if (Parent.basePrefab != null && Application.isPlaying)
                 instantiateChild(Parent.basePrefab);
