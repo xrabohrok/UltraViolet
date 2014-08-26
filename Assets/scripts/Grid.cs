@@ -92,8 +92,20 @@ namespace ultraviolet.builder
 
         private void setCellNeighbor(List<List<GameObject>> cellArray, int x, int y, int u, int v)
         {
-            cellArray[u][v].GetComponent<Cell>().neighbors.Add(cellArray[x][y].GetComponent<Cell>());
-            cellArray[x][y].GetComponent<Cell>().neighbors.Add(cellArray[u][v].GetComponent<Cell>());
+            var A = cellArray[u][v].GetComponent<Cell>();
+            var B = cellArray[x][y].GetComponent<Cell>();
+
+            if(A.neighbors == null)
+                A.neighbors = new List<Cell>();
+
+            if(B.neighbors == null)
+                B.neighbors = new List<Cell>();
+
+            if(!A.neighbors.Contains(B))
+                A.neighbors.Add(B);
+            
+            if(!B.neighbors.Contains(A))
+                B.neighbors.Add(A);
         }
 #endif
 
@@ -157,7 +169,6 @@ namespace ultraviolet.builder
 
             if (neighbors == null)
             {
-                Debug.Log("setup links");
                 neighbors = new List<Cell>();
             }
 
