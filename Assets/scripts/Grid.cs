@@ -47,7 +47,8 @@ namespace ultraviolet.builder
 
             for (int i = 0; i < widthCount; i++)
             {
-                cellArray[i] = new List<GameObject>();
+                cellArray.Add(new List<GameObject>());
+
                 for (int j = 0; j < lengthCount; j++)
                 {
                     cellArray[i].Add(cellObject(i, j));
@@ -61,7 +62,38 @@ namespace ultraviolet.builder
 
         public void linkNeighbors(List<List<GameObject>> cellArray)
         {
+            for(int j = 0; j < cellArray.Count; j++)
+            {
+                for(int i = 0; i < cellArray[j].Count; i++)
+                {
+                    //top
+                    if(j - 1 >= 0)
+                    {
+                        setCellNeighbor(cellArray, j, i, j - 1, i);
+                    }
+                    //down
+                    if (j +1 < cellArray.Count)
+                    {
+                        setCellNeighbor(cellArray, j, i,  j + 1, i);
+                    }
+                    //left
+                    if (i - 1 >= 0)
+                    {
+                        setCellNeighbor(cellArray,  j, i, j, i - 1);
+                    }
+                    //right
+                    if (i + 1 < cellArray[j].Count)
+                    {
+                        setCellNeighbor(cellArray, j, i, j, i + 1);
+                    }
+                }
+            }
+        }
 
+        private void setCellNeighbor(List<List<GameObject>> cellArray, int x, int y, int u, int v)
+        {
+            cellArray[u][v].GetComponent<Cell>().neighbors.Add(cellArray[x][y].GetComponent<Cell>());
+            cellArray[x][y].GetComponent<Cell>().neighbors.Add(cellArray[u][v].GetComponent<Cell>());
         }
 #endif
 
@@ -104,6 +136,7 @@ namespace ultraviolet.builder
 
             return operatingChildren;
         }
+
     }
 
     [ExecuteInEditMode]
@@ -123,7 +156,10 @@ namespace ultraviolet.builder
             indexY = 1;
 
             if (neighbors == null)
+            {
+                Debug.Log("setup links");
                 neighbors = new List<Cell>();
+            }
 
             if (Parent.basePrefab != null && Application.isPlaying)
                 instantiateChild(Parent.basePrefab);
