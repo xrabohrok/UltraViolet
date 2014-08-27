@@ -47,4 +47,20 @@ namespace ultraviolet.editors{
 
 	    }
     }
+
+    [CustomEditor(typeof(Cell))]
+    public class CellEditor : Editor
+    {
+        [DrawGizmo(GizmoType.Selected| GizmoType.NotSelected)]
+        static void DrawGameObjectName(Transform transform, GizmoType gizmoType)
+        {
+            if(transform.GetComponents<Cell>().Length >= 1)
+            Handles.Label(transform.position, transform.gameObject.name);
+        }
+
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+        }
+    }
 }
