@@ -23,5 +23,15 @@ namespace ultraviolet.actor
         {
 
         }
+
+        private void reEvaluate()
+        {
+            //gather all nodes
+            //begin loops
+            //--take point node (start with dude)
+            //--get all neighbors
+            //--score all neighbors
+            //--choose next point node (or end)
+        }
     }
 }
