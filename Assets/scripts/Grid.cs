@@ -161,6 +161,9 @@ namespace ultraviolet.builder
 
         public List<Cell> neighbors;
 
+        //pathfinding stuff
+        Cell pathParent = null;
+        int weight = 0;
 
         public void Start()
         {
