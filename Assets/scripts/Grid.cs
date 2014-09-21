@@ -158,6 +158,8 @@ namespace ultraviolet.builder
         public Grid Parent;
         public int indexX { get; private set; }
         public int indexY { get; private set; }
+        public float width { get; private set; }
+
 
         public List<Cell> neighbors;
 
@@ -187,17 +189,14 @@ namespace ultraviolet.builder
         }
 
 #if UNITY_EDITOR
-        public void resize(float width, float spacing, int up, int right)
-        {
-            this.transform.localScale = new Vector3(width,width,width);
-        }
-
         public void updateEdit(int index_X, int index_Y)
         {
             setPosition(index_X, index_Y);
 
             indexX = index_X;
             indexY = index_Y;
+
+            width = Parent.width;
         }
 
         private void setPosition(int x, int y)
