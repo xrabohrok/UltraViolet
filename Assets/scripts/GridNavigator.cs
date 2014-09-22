@@ -12,12 +12,15 @@ namespace ultraviolet.Actors
     {
         public Cell currentCell;
         public bool NeedsRefresh = true;
+        public Cell targetCell;
 
         protected List<Cell> path;
 
         private List<Cell> closedSet;
+        private List<Cell> openSet;
         private BinaryHeap<PathNode> neighbors;
         private PathNode treeHead;
+        private Cell evaluatingCell;
 
         //Euclidean distance hueristic (distance/cell width)
         private Func<Cell, Cell, int> hueristic = 
@@ -31,8 +34,19 @@ namespace ultraviolet.Actors
         protected void updatePath( )
         {
             //get all cells
+            openSet = GameObject.FindObjectsOfType<Cell>().ToList<Cell>();
+
             //take out start cell
+            if (targetCell == null)
+                throw new Exception("no target to generate");
+            openSet.Remove(targetCell);
+            evaluatingCell = targetCell;
+
             //generate neighbors
+            foreach(var entry in targetCell.neighbors)
+            {
+                //push Pathnode to heap
+            }
             //start loop
             //--if there is still neighbors, choose lowest
             //--am I the target? yes no
