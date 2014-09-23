@@ -43,9 +43,18 @@ namespace ultraviolet.Actors
             evaluatingCell = targetCell;
 
             //generate neighbors
+            treeHead = new PathNode(null, currentCell, 0);
             foreach(var entry in targetCell.neighbors)
             {
-                //push Pathnode to heap
+                openSet.Remove(entry);
+                //link to each other
+                var node = new PathNode(treeHead, entry, 1);
+                treeHead.Branches.Add(node);
+                //calculate heuristic
+                node.HValue = hueristic(node.Location, targetCell);
+
+                //push into heap
+                neighbors.Insert(node);
             }
             //start loop
             //--if there is still neighbors, choose lowest
@@ -58,15 +67,29 @@ namespace ultraviolet.Actors
 
         public class PathNode
         {
-            public int stepsToHere;
-            public int hValue;
+            public int StepsToHere;
+            public int HValue;
 
-            public int score;
+            public int Score {
+                get{
+                    return StepsToHere + HValue;    
+                }
+            }
 
-            public PathNode parent;
-            public List<PathNode> branches;
+            public PathNode Parent;
+            public List<PathNode> Branches;
 
-            public bool target = false;
+            public Cell Location;
+
+            public bool Target = false;
+
+            public PathNode(PathNode parent, Cell location, int stepsToHere)
+            {
+                StepsToHere = stepsToHere;
+                Parent = parent;
+                Location = location;
+                Branches = new List<PathNode>();
+            }
 
         }
 
@@ -77,9 +100,9 @@ namespace ultraviolet.Actors
 
         public int Compare(GridNavigator.PathNode x, GridNavigator.PathNode y)
         {
-            if (x.score == y.score)
+            if (x.Score == y.Score)
                 return 0;
-            if (x.score > y.score)
+            if (x.Score > y.Score)
                 return 1;
             else return -1;
         }
