@@ -56,11 +56,22 @@ namespace ultraviolet.Actors
                 //push into heap
                 neighbors.Insert(node);
             }
+            
             //start loop
-            //--if there is still neighbors, choose lowest
-            //--am I the target? yes no
-            //--calculate heuristic for all neighbors not in closed set
-            //--push newly calculated neighbors to heap
+            while (neighbors.Count() > 0)
+            {
+                //--if there is still neighbors, choose lowest
+                var current = neighbors.RemoveRoot();
+
+                //--am I the target? yes no
+                if (current.Target)
+                    continue;
+
+                //--calculate heuristic for all neighbors not in closed set
+                //--push newly calculated neighbors to heap
+            }
+
+
             //stop loop
             //go up tree to generate path.
         }
