@@ -65,15 +65,27 @@ namespace ultraviolet.Actors
 
                 //--am I the target? yes no
                 if (current.Target)
+                {
+                    current.Target = true;
                     continue;
+                }
 
                 //--calculate heuristic for all neighbors not in closed set
-                //--push newly calculated neighbors to heap
+                foreach(var neighbor in current.Location.neighbors)
+                {
+                    if(openSet.Contains(neighbor))
+                    {
+                        openSet.Remove(neighbor);
+
+                        var thisLeaf = new PathNode(current, neighbor, ++current.StepsToHere);
+
+                        thisLeaf.HValue = hueristic(neighbor, targetCell);
+
+                        neighbors.Insert(thisLeaf);
+                    }
+                }
             }
 
-
-            //stop loop
-            //go up tree to generate path.
         }
 
         public class PathNode
