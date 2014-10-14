@@ -13,6 +13,7 @@ namespace ultraviolet.Actors
         public Cell currentCell;
         public bool NeedsRefresh = true;
         public Cell targetCell;
+        public bool pathFound { get; private set; }
 
         protected List<Cell> path;
 
@@ -35,6 +36,7 @@ namespace ultraviolet.Actors
         {
             //get all cells
             openSet = GameObject.FindObjectsOfType<Cell>().ToList<Cell>();
+            path = new List<Cell>();
 
             //take out start cell
             if (targetCell == null)
@@ -43,8 +45,8 @@ namespace ultraviolet.Actors
             evaluatingCell = targetCell;
 
             //generate neighbors
-            treeHead = new PathNode(null, currentCell, 0);
-            foreach(var entry in targetCell.neighbors)
+            var current = new PathNode(null, currentCell, 0);
+            foreach(var entry in currentCell.neighbors)
             {
                 openSet.Remove(entry);
                 //link to each other
@@ -61,12 +63,13 @@ namespace ultraviolet.Actors
             while (neighbors.Count() > 0)
             {
                 //--if there is still neighbors, choose lowest
-                var current = neighbors.RemoveRoot();
+                current = neighbors.RemoveRoot();
 
                 //--am I the target? yes no
                 if (current.Target)
                 {
                     current.Target = true;
+                    path.Add(current.Location);
                     continue;
                 }
 
@@ -84,6 +87,27 @@ namespace ultraviolet.Actors
                         neighbors.Insert(thisLeaf);
                     }
                 }
+            }
+
+            if (current == null)
+            {
+                pathFound = false;
+                path = null;
+                return;
+            }
+            pathFound = true;
+
+            //flip the path
+            Stack<PathNode> reversePath = new Stack<PathNode>();
+            while (current.Parent == null)
+            {
+                reversePath.Push(current);
+                current = current.Parent;
+            }
+
+            while(reversePath.Count() > 0)
+            {
+                path.Add(reversePath.Pop().Location);
             }
 
         }
